@@ -1,7 +1,7 @@
 package com.example.onlyimportantnews;
 
 public class NewsItem implements Comparable<NewsItem> {
-    private String title,score,originUrl, link, thumbnail;
+    private String title,score,originUrl, link, thumbnail, subreddit;
     private Long unixTimeCreated;
 
     @Override
@@ -13,6 +13,14 @@ public class NewsItem implements Comparable<NewsItem> {
         } else {
             return 0;
         }
+    }
+
+    public String getSubreddit() {
+        return subreddit;
+    }
+
+    public void setSubreddit(String subreddit) {
+        this.subreddit = subreddit;
     }
 
     public String getTitle() {

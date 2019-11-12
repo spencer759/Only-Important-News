@@ -7,10 +7,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
-import android.widget.ImageView;
 import android.widget.TextView;
-
-import com.squareup.picasso.Picasso;
 
 import java.util.List;
 
@@ -51,17 +48,46 @@ public class NewsItemAdapter extends ArrayAdapter {
 
         currentNewsItem = newsItemList.get(position);
 
-        TextView newsTitle = convertView.findViewById(R.id.newsTitle);
-        TextView newsDate = convertView.findViewById(R.id.newsDate);
+        TextView newsTitle = convertView.findViewById(R.id.newsTitleTextView);
+        TextView newsDate = convertView.findViewById(R.id.newsDateTextView);
+        TextView newsCategory = convertView.findViewById(R.id.newsCategoryTextView);
 
         newsTitle.setText(currentNewsItem.getTitle());
         newsDate.setText(TimeDateConversion.UnixToDayAndMonth(currentNewsItem.getUnixTimeCreated()));
+        newsCategory.setText(setCategory());
 
         setTextClickListener(newsTitle);
 
-        setThumbnailImage(convertView);
-
         return convertView;
+    }
+
+    private String setCategory() {
+        switch(currentNewsItem.getSubreddit()) {
+            case "worldnews":
+                return "World News";
+            case "politics":
+                return "US Politics";
+            case "ukpolitics":
+                return "UK Politics";
+            case "tech":
+                return "Technology";
+            case "science":
+                return "Science";
+            case "space":
+                return "Space";
+            case "movies":
+                return "Movies and Television";
+            case "television":
+                return "Movies and Television";
+            case "Economics":
+                return "Economy";
+            case "sports":
+                return "Sports";
+            case "Health":
+                return "Health";
+        }
+
+        return null;
     }
 
     private void setTextClickListener(TextView newsTitle) {
@@ -77,24 +103,15 @@ public class NewsItemAdapter extends ArrayAdapter {
         });
     }
 
-    private void setThumbnailImage(View convertView) {
-        if (currentNewsItem.getThumbnail().isEmpty()) {
-            // put local image later
-            Picasso.get().load("https://image.flaticon.com/icons/png/128/149/149366.png").into((ImageView) convertView.findViewById(R.id.newsThumbnail));
-        } else {
-            Picasso.get().load(currentNewsItem.getThumbnail()).into((ImageView) convertView.findViewById(R.id.newsThumbnail));
-        }
-    }
-
     private class ViewHolder {
         final TextView newsTitle;
         final TextView newsDate;
-        final ImageView newsImage;
+        final TextView newsCategory;
 
         ViewHolder(View v) {
-            this.newsTitle = v.findViewById(R.id.newsTitle);
-            this.newsDate = v.findViewById(R.id.newsDate);
-            this.newsImage = v.findViewById(R.id.newsThumbnail);
+            this.newsTitle = v.findViewById(R.id.newsTitleTextView);
+            this.newsDate = v.findViewById(R.id.newsDateTextView);
+            this.newsCategory = v.findViewById(R.id.newsCategoryTextView);
 
         }
     }

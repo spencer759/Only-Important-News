@@ -55,7 +55,7 @@ public class DownloadData {
 
         public static class GetDataInBackground extends AsyncTask<ArrayList<String>, Void, String> {
             private final String TAG = "DownloadData";
-            private String title ,originUrl, isLink, thumbnail;
+            private String title ,originUrl, isLink, thumbnail, subreddit;
             private Long unixTimeCreated;
             private boolean containsBlockedUrl = false;
 
@@ -107,6 +107,7 @@ public class DownloadData {
                         title = jsonArr.getJSONObject(i).getJSONObject("data").getString("title");
                         isLink = jsonArr.getJSONObject(i).getJSONObject("data").getString("is_self");
                         thumbnail = jsonArr.getJSONObject(i).getJSONObject("data").getString("thumbnail");
+                        subreddit = jsonArr.getJSONObject(i).getJSONObject("data").getString("subreddit");
 
                         if (isLink == "false") {
                             NewsItem tmpNewsItem = new NewsItem();
@@ -115,6 +116,7 @@ public class DownloadData {
                             tmpNewsItem.setThumbnail(thumbnail);
                             tmpNewsItem.setOriginUrl(originUrl);
                             tmpNewsItem.setUnixTimeCreated(unixTimeCreated);
+                            tmpNewsItem.setSubreddit(subreddit);
 
                             newsItemsDownloaded.add(tmpNewsItem);
                         }
