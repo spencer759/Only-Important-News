@@ -4,29 +4,16 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
-import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.net.Uri;
-import android.os.AsyncTask;
 import android.os.Bundle;
-import android.os.health.HealthStats;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.webkit.WebView;
-import android.webkit.WebViewClient;
-import android.widget.ListView;
-import org.json.JSONArray;
-import org.json.JSONObject;
-import java.io.BufferedReader;
-import java.io.InputStreamReader;
-import java.lang.reflect.Array;
-import java.net.HttpURLConnection;
-import java.net.URL;
+import android.view.View;
+import android.widget.ProgressBar;
+
 import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
     private static final String TAG = "MainActivity";
@@ -48,11 +35,14 @@ public class MainActivity extends AppCompatActivity {
     private ArrayList<String> newsSourceUrls = new ArrayList<>();
 
     private SwipeRefreshLayout swipeRefreshLayout;
+    private ProgressBar mainProgressBar;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        mainProgressBar = findViewById(R.id.progressBar);
 
         swipeRefreshLayout = findViewById(R.id.swipeRefresh);
 
@@ -68,13 +58,23 @@ public class MainActivity extends AppCompatActivity {
         download();
     }
 
+    private void download() {
+        if (!swipeRefreshLayout.isRefreshing()) {
+            mainProgressBar.setVisibility(View.VISIBLE);
+        }
+
+        storiesToGet = getNumberOfStoriesToDownload();
+        newsSourceUrls = getSelectedNewsSources(storiesToGet);
+        DownloadData.DownloadUrlList(this, newsSourceUrls, this);
+    }
+
     private ArrayList<String> getSelectedNewsSources(int numberOfStoriesToDownload) {
         SharedPreferences settings = getSharedPreferences(SETTINGS_DATA, MODE_PRIVATE);
 
         newsSourceUrls.clear(); // Clean so we don't duplicate news sources
 
         if (settings.getBoolean(WORLD_NEWS_BOOLEAN, true)) {
-            newsSourceUrls.add("https://www.reddit.com/r/worldnews/top.json?t=month&limit=" + numberOfStoriesToDownload);
+            newsSourceUrls.add("https://www.reddit.com/r/GlobalNews/top.json?t=month&limit=" + numberOfStoriesToDownload);
         }
 
         if (settings.getBoolean(US_POLITICS_BOOLEAN, true)) {
@@ -82,11 +82,11 @@ public class MainActivity extends AppCompatActivity {
         }
 
         if (settings.getBoolean(UK_POLITICS_BOOLEAN, true)) {
-            newsSourceUrls.add("https://www.reddit.com/r/ukpolitics/top.json?t=month&limit=" + numberOfStoriesToDownload);
+            newsSourceUrls.add("https://www.reddit.com/r/BritishPolitics/top.json?t=month&limit=" + numberOfStoriesToDownload);
         }
 
         if (settings.getBoolean(TECHNOLOGY_BOOLEAN, true)) {
-            newsSourceUrls.add("https://www.reddit.com/r/tech/top.json?t=month&limit=" + numberOfStoriesToDownload);
+            newsSourceUrls.add("https://www.reddit.com/r/technews/top.json?t=month&limit=" + numberOfStoriesToDownload);
         }
 
         if (settings.getBoolean(SCIENCE_BOOLEAN, true)) {
@@ -103,7 +103,7 @@ public class MainActivity extends AppCompatActivity {
         }
 
         if (settings.getBoolean(ECONOMY_BOOLEAN, true)) {
-            newsSourceUrls.add("https://www.reddit.com/r/economics/top.json?t=month&limit=" + numberOfStoriesToDownload);
+            newsSourceUrls.add("https://www.reddit.com/r/economy/top.json?t=month&limit=" + numberOfStoriesToDownload);
         }
 
         if (settings.getBoolean(SPORTS_BOOLEAN, true)) {
@@ -133,12 +133,6 @@ public class MainActivity extends AppCompatActivity {
         }
 
         return storiesToGet;
-    }
-
-    private void download() {
-        storiesToGet = getNumberOfStoriesToDownload();
-        newsSourceUrls = getSelectedNewsSources(storiesToGet);
-        DownloadData.DownloadUrlList(this, newsSourceUrls, this);
     }
 
     @Override

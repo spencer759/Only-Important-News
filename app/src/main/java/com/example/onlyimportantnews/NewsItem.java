@@ -1,14 +1,20 @@
 package com.example.onlyimportantnews;
 
 public class NewsItem implements Comparable<NewsItem> {
-    private String title,score,originUrl, link, thumbnail, subreddit;
+    private String title;
+    private String score;
+    private String originUrl;
+    private String link;
+    private String thumbnail;
+    private String subreddit;
+    private String uniqueID;
     private Long unixTimeCreated;
 
     @Override
-    public int compareTo(NewsItem o) {
-        if (this.unixTimeCreated > o.unixTimeCreated) {
+    public int compareTo(NewsItem itemToCompareTo) {
+        if (this.unixTimeCreated > itemToCompareTo.unixTimeCreated) {
             return -1;
-        } else if (this.unixTimeCreated < o.unixTimeCreated) {
+        } else if (this.unixTimeCreated < itemToCompareTo.unixTimeCreated) {
             return 1;
         } else {
             return 0;
@@ -70,4 +76,13 @@ public class NewsItem implements Comparable<NewsItem> {
     public void setUnixTimeCreated(Long unixTimeCreated) {
         this.unixTimeCreated = unixTimeCreated;
     }
+
+    public String getUniqueID() {
+        return uniqueID;
+    }
+
+    public void setUniqueID(String uniqueID) {
+        this.uniqueID = uniqueID;
+    }
+
 }
